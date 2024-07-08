@@ -1,5 +1,16 @@
-#include "skse64/PapyrusNativeFunctions.h"
-#include <math.h>       /* atan */
+//
+// Created by frank on 7/7/2024.
+//
+
+#ifndef LOCATIONALDAMAGE_H
+#define LOCATIONALDAMAGE_H
+
+#include <cmath>       /* atan */
+#include <vector>
+
+#include <SKSE/SKSE.h>
+#include <RE/T/TypeTraits.h>
+
 #define PI 3.14159265
 #define M_PI_4     0.785398163397448309616
 
@@ -69,7 +80,7 @@ namespace LocDamageNamespace
 
 	};
 	struct Actions {
-		Actions(UInt32 bIsSneaking, UInt32 bIsSneakingMe, UInt32 bIsSprintingMe, UInt32 bIsRecoilingMe, UInt32 bIsPowerAttack, UInt32 uWeaponType)
+		Actions(uint32_t bIsSneaking, uint32_t bIsSneakingMe, uint32_t bIsSprintingMe, uint32_t bIsRecoilingMe, uint32_t bIsPowerAttack, uint32_t uWeaponType)
 		{
 			isSneaking = bIsSneaking;
 			isSneakingMe = bIsSneakingMe;
@@ -79,19 +90,22 @@ namespace LocDamageNamespace
 			weaponType = uWeaponType;
 		}
 
-		UInt32 isSneaking;
-		UInt32 isSneakingMe;
-		UInt32 isSprintingMe;
-		UInt32 isRecoilingMe;
-		UInt32 isPowerAttack;
-		UInt32 weaponType;
+		uint32_t isSneaking;
+		uint32_t isSneakingMe;
+		uint32_t isSprintingMe;
+		uint32_t isRecoilingMe;
+		uint32_t isPowerAttack;
+		uint32_t weaponType;
 	};
 
-	UInt32 hitDetection(Dimensions d, Angles a, Positions p, Actions s);
+	uint32_t hitDetection(Dimensions d, Angles a, Positions p, Actions s);
 
-	UInt32 GetHitZone(StaticFunctionTag *base, VMArray<float> d, VMArray<float> a, VMArray<float> p, VMArray<UInt32> s);
+	uint32_t GetHitZone(RE::StaticFunctionTag*, std::vector<float> d, std::vector<float> a, std::vector<float> p, std::vector<uint32_t> s);
 
-	UInt32 ArmHitCalcSKSE(StaticFunctionTag *base, float facing, float headingAngle, double armRange);
+	uint32_t ArmHitCalcSKSE(RE::StaticFunctionTag*, float facing, float headingAngle, double armRange);
 
-	bool RegisterFuncs(VMClassRegistry* registry);
+    bool RegisterFuncs(RE::BSScript::IVirtualMachine* vm);
+
 }
+
+#endif //LOCATIONALDAMAGE_H
