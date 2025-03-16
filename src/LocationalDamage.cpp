@@ -94,7 +94,7 @@ namespace LocDamageNamespace {
 		double zHeightMe = p.zPosMe;
 
 		if (s.isSneaking) {
-			net_height = net_height * .75;
+			net_height = net_height * .85;
 		}
 
 		if (s.isSneakingMe || s.isRecoilingMe) {
