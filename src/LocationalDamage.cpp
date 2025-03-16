@@ -101,7 +101,7 @@ namespace LocDamageNamespace {
 			net_height_me = net_height_me * .75;
 		}
 		else if (s.isSprintingMe) {
-			net_height_me = net_height_me - d.scaleMe * 5;
+			net_height_me = net_height_me * .98;
 		}
 
 		zHeight = p.zPos + net_height;
