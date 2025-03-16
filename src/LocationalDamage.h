@@ -5,14 +5,13 @@
 #ifndef LOCATIONALDAMAGE_H
 #define LOCATIONALDAMAGE_H
 
-#include <cmath>       /* atan */
 #include <vector>
 
-#include <SKSE/SKSE.h>
 #include <RE/T/TypeTraits.h>
+#include <spdlog/sinks/basic_file_sink.h>
 
 #define PI 3.14159265
-#define M_PI_4     0.785398163397448309616
+
 
 namespace LocDamageNamespace
 {
