@@ -1,6 +1,8 @@
 #include "LocationalDamage.h"
 
 namespace LocDamageNamespace {
+    constexpr std::string_view PapyrusClass = "LDHitZones";
+
 	int armHitCalc(float facing, float headingAngle, double armRange) {
 		if (abs(facing) < 45) {
 			if (headingAngle > armRange) {
@@ -74,9 +76,10 @@ namespace LocDamageNamespace {
 				return back;
 			}
 		}
+	    return 0;
 	}
 
-	UInt32 hitDetection(Dimensions d, Angles a, Positions p, Actions s) {
+	uint32_t hitDetection(Dimensions d, Angles a, Positions p, Actions s) {
 		double net_height = d.height;
 		double net_height_me = d.heightMe;
 		double dispWidth;
@@ -177,60 +180,36 @@ namespace LocDamageNamespace {
 		return feet;
 	}
 
-	UInt32 GetHitZone(StaticFunctionTag *base, VMArray<float> d, VMArray<float> a, VMArray<float> p, VMArray<UInt32> s) {
-		gLog.SetLogLevel(IDebugLog::kLevel_Message);
+	uint32_t GetHitZone(RE::StaticFunctionTag*, std::vector<float> d, std::vector<float> a, std::vector<float> p, std::vector<uint32_t> s) {
+		//gLog.SetLogLevel(IDebugLog::kLevel_Message);
 
 		// Dimensions
-		float scale;
-		float scaleMe;
-		float width;
-		float widthMe;
-		float height;
-		float heightMe;
+        const auto scale = d[0];
+        const auto scaleMe = d[1];
+	    const auto width = d[2];
+	    const auto widthMe = d[3];
+	    const auto height = d[4];
+	    const auto heightMe = d[5];
 
 		// Angles
-		float facing;
-		float headingAngle;
-		float ax;
+		const auto facing = a[0];
+		const auto headingAngle = a[1];
+		const auto ax = a[2];
 
 		// Positions
-		float dist;
-		float dx;
-		float dy;
-		float zPos;
-		float zPosMe;
+		const auto dist = p[0];
+		const auto dx = p[1];
+		const auto dy = p[2];
+		const auto zPos = p[3];
+		const auto zPosMe = p[4];
 
 		// States
-		UInt32 isSneaking;
-		UInt32 isSneakingMe;
-		UInt32 isSprintingMe;
-		UInt32 isRecoilingMe;
-		UInt32 isPowerAttack;
-		UInt32 weaponType;
-
-		d.Get(&scale, 0);
-		d.Get(&scaleMe, 1);
-		d.Get(&width, 2);
-		d.Get(&widthMe, 3);
-		d.Get(&height, 4);
-		d.Get(&heightMe, 5);
-
-		a.Get(&facing, 0);
-		a.Get(&headingAngle, 1);
-		a.Get(&ax, 2);
-
-		p.Get(&dist, 0);
-		p.Get(&dx, 1);
-		p.Get(&dy, 2);
-		p.Get(&zPos, 3);
-		p.Get(&zPosMe, 4);
-
-		s.Get(&isSneaking, 0);
-		s.Get(&isSneakingMe, 1);
-		s.Get(&isSprintingMe, 2);
-		s.Get(&isRecoilingMe, 3);
-		s.Get(&isPowerAttack, 4);
-		s.Get(&weaponType, 5);
+		const auto isSneaking = s[0];
+		const auto isSneakingMe = s[1];
+		const auto isSprintingMe = s[2];
+		const auto isRecoilingMe = s[3];
+		const auto isPowerAttack = s[4];
+		const auto weaponType = s[5];
 
 		Dimensions dimensions(scale, scaleMe, width, widthMe, height, heightMe);
 		Angles angles(facing, headingAngle, ax);
@@ -240,13 +219,14 @@ namespace LocDamageNamespace {
 		return hitDetection(dimensions, angles, pos, actions);
 	}
 
-	UInt32 ArmHitCalcSKSE(StaticFunctionTag *base, float facing, float headingAngle, float armRange) {
-		return (UInt32)armHitCalc(facing, headingAngle, armRange);
+	uint32_t ArmHitCalcSKSE(RE::StaticFunctionTag*, float facing, float headingAngle, double armRange) {
+		return (uint32_t)armHitCalc(facing, headingAngle, armRange);
 	}
 
-	bool RegisterFuncs(VMClassRegistry* registry) {
-		registry->RegisterFunction(new NativeFunction4 <StaticFunctionTag, UInt32, VMArray<float>, VMArray<float>, VMArray<float>, VMArray<UInt32>>("GetHitZone", "LDHitZones", LocDamageNamespace::GetHitZone, registry));
-		registry->RegisterFunction(new NativeFunction3 <StaticFunctionTag, UInt32, float, float, float>("ArmHitCalcSKSE", "LDHitZones", LocDamageNamespace::ArmHitCalcSKSE, registry));
-		return true;
+    bool RegisterFuncs(RE::BSScript::IVirtualMachine* vm) {
+	    vm->RegisterFunction("GetHitZone", PapyrusClass, LocDamageNamespace::GetHitZone);
+	    vm->RegisterFunction("ArmHitCalcSKSE", PapyrusClass, LocDamageNamespace::ArmHitCalcSKSE);
+
+	    return true;
 	}
 }
